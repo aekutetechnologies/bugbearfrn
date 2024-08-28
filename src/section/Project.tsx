@@ -54,8 +54,8 @@ const data = [
 
 export const Project = () => {
   return (
-    <main className="h-[440px] ">
-      <section className="container mx-auto px-20 space-y-12 h-full">
+    <main className="h-[580px] flex items-center">
+      <section className="container mx-auto px-20 flex flex-col justify-evenly h-full">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold tracking-wider">
             Cyber Hub Projects

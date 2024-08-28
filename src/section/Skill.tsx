@@ -60,8 +60,8 @@ const data = [
 
 export const Skill = () => {
   return (
-    <main className="mt-20 bg-slate-100 h-fit">
-      <section className="container mx-auto px-20 pt-20 pb-14 flex flex-col gap-5">
+    <main className="  h-fit w-full bg-slate-100">
+      <section className=" container mx-auto  p-20 flex flex-col gap-10">
         <div className="flex flex-col justify-start">
           <h1 className="text-2xl font-bold tracking-wider">
             Browse by Skills
@@ -75,7 +75,7 @@ export const Skill = () => {
               className="bg-white p-10 rounded-lg shadow-md flex flex-col gap-5"
             >
               <div>
-                <h2 className="text-2xl font-bold">{item.name}</h2>
+                <h2 className="text-xl font-bold">{item.name}</h2>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">

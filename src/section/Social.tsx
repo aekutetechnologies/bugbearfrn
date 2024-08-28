@@ -29,19 +29,19 @@ const data = [
 
 export const Social = () => {
   return (
-    <main className="h-screen">
-      <section className="container mx-auto px-20 pt-20 pb-14 flex flex-col gap-5  h-full justify-center items-center">
-        <div className="grid grid-cols-2  w-full gap-24 h-full">
+    <main className="h-fit w-full">
+      <section className="container mx-auto w-fit px-20 pt-20 pb-14 flex flex-col gap-5 h-full justify-center items-center">
+        <div className="grid grid-cols-2 w-full gap-24 h-full">
           <div className="col-span-1 flex flex-col justify-center gap-14 mt-10">
             <div className="flex flex-col gap-4 items-center">
               <h1 className="text-4xl font-bold tracking-wider">
                 What Bugbear Delivers
               </h1>
               <p className="text-lg font-medium text-black">
-                We prioritize the quality ,speen and security.
+                We prioritize quality, speed, and security.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-4 ">
+            <div className="grid grid-cols-2 gap-4">
               {data.map((item, index) => (
                 <div
                   key={index}
@@ -59,30 +59,30 @@ export const Social = () => {
           </div>
 
           <div className="col-span-1 relative flex justify-center items-center">
-            {/* Blue box */}
-            <div className="bg-sky-100/50 w-full h-[450px] items-end"></div>
+            <div className="bg-sky-100/50 w-full h-[450px] items-end rounded-lg overflow-hidden"></div>
 
-            {/* Man image overflowing the blue box */}
-            <div className="absolute top-0   left-2">
-              <Image src={man} alt="man" className="" />
-              <Image
-                src={star}
-                alt="star"
-                className="absolute top-24 right-20 size-8"
-              />
-              <Image
-                src={star}
-                alt="star"
-                className="absolute top-72 right-4"
-              />
-              <Image
-                src={star}
-                alt="star"
-                className="absolute bottom-20 left-8"
-              />
-              <div className="absolute top-32 -left-16 flex justify-center items-center gap-2 px-5 py-3 bg-white shadow-xl shadow-slate-300/75  rounded-xl tracking-wider">
-                <Image src={shield} alt="shield" className="size-8" />
-                <span className="text-lg font-extrabold">100% Trusted</span>
+            <div className="absolute top-[-20px] w-full h-full flex justify-center items-center">
+              <div className="relative">
+                <Image src={man} alt="man" className="relative z-10" />
+                <Image
+                  src={star}
+                  alt="star"
+                  className="absolute top-24 right-10 w-8 h-8"
+                />
+                <Image
+                  src={star}
+                  alt="star"
+                  className="absolute top-72 right-0 w-6 h-6"
+                />
+                <Image
+                  src={star}
+                  alt="star"
+                  className="absolute bottom-20 left-8 w-5 h-5"
+                />
+                <div className="absolute top-32 -left-16 flex justify-center items-center gap-2 px-5 py-3 bg-white shadow-xl shadow-slate-300/75 rounded-xl tracking-wider">
+                  <Image src={shield} alt="shield" className="w-8 h-8" />
+                  <span className="text-lg font-extrabold">100% Trusted</span>
+                </div>
               </div>
             </div>
           </div>
