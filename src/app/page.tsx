@@ -41,6 +41,7 @@ import wave from "../../public/assets/wave lines.png";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function Home() {
   const image = [
@@ -216,13 +217,14 @@ export default function Home() {
   ];
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [data, setData] = useState([]);
   const router = useRouter();
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Redirect to /jobs with the search query
+    console.log("Search initiated with query:", searchQuery); // Check if the function is triggered
     router.push(`/jobs?search=${encodeURIComponent(searchQuery)}`);
   };
+  
   return (
     <div className="bg-[#eaf4fc] h-screen flex flex-col gap-3">
       <header className="p-4  flex-shrink-0 ">
@@ -234,12 +236,12 @@ export default function Home() {
             </Link>
           </div>
           <div className="flex items-center gap-2">
-            <button className="text-emerald-500 text-sm md:text-lg font-semibold px-4 md:px-6 py-2 rounded-md">
+            <Link href="/signin" className="text-emerald-500 text-sm md:text-lg font-semibold px-4 md:px-6 py-2 rounded-md">
               Login
-            </button>
-            <button className="bg-emerald-500 text-white text-sm md:text-lg px-4 md:px-6 py-2 font-semibold rounded-md">
+            </Link>
+            <Link href="/signup" className="bg-emerald-500 text-white text-sm md:text-lg px-4 md:px-6 py-2 font-semibold rounded-md">
               Sign Up
-            </button>
+            </Link>
           </div>
         </nav>
       </header>
