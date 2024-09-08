@@ -8,6 +8,7 @@ import axios from "axios";
 
 import github from "@/public/assets/github.png";
 import instagram from "@/public/assets/instagram.webp";
+import { getJobs, fetchJobDetails } from '../../api/jobApi';
 
 import {
   SlCalender,
@@ -52,7 +53,7 @@ const JobsPage = () => {
     }
   }, []);
 
-  const callApi = async () => {
+  const getJobs = async () => {
     setLoading(true);
     try {
       const res = await axios.post(
@@ -72,14 +73,14 @@ const JobsPage = () => {
 
   useEffect(() => {
     if (searchQuery) {
-      callApi();
+      getJobs();
     }
   }, [searchQuery]);
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchQuery) {
-      callApi();
+      getJobs();
     }
   };
 

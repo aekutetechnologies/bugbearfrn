@@ -11,6 +11,8 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import github from "../../public/assets/github.png";
 import { LuUsers2 } from "react-icons/lu";
+import { Slide, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import image1 from "../../public/assets/Company logo.png";
 import image2 from "../../public/assets/Company logo-1.png";
@@ -29,8 +31,6 @@ import man from "../../public/assets/handsome-businessman-suit-glasses-cross-arm
 import star from "../../public/assets/star.png";
 import shield from "../../public/assets/shield.png";
 
-// import { IoIosArrowRoundBack } from "react-icons/io";
-// import { IoIosArrowRoundForward } from "react-icons/io";
 import user1 from "../../public/assets/Ellipse 18.png";
 import user2 from "../../public/assets/Ellipse 18-1.png";
 import user3 from "../../public/assets/Ellipse 18-2.png";
@@ -38,10 +38,14 @@ import user3 from "../../public/assets/Ellipse 18-2.png";
 import girl from "../../public/assets/girl with laptop.png";
 import wave from "../../public/assets/wave lines.png";
 // import star from "../../public/assets/star.png";
+import user from "../../public/assets/user_png.png";
+import { IoLogOutOutline } from "react-icons/io5";
+import { CiUser } from "react-icons/ci";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import UserProfile from "./user/page";
 
 export default function Home() {
   const image = [
@@ -219,15 +223,85 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState([]);
   const router = useRouter();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Search initiated with query:", searchQuery); // Check if the function is triggered
     router.push(`/jobs?search=${encodeURIComponent(searchQuery)}`);
   };
-  
+
+  //After sign in
+  useEffect(() => {
+    console.log("useEffect running");
+    const toastMessage = localStorage.getItem("showToast");
+    if (toastMessage) {
+      console.log(toastMessage);
+
+      toast.success(toastMessage);
+
+      const removeToast = setTimeout(() => {
+        localStorage.removeItem("showToast");
+      }, 5000);
+    }
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("Access");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("Access");
+    localStorage.removeItem("Refresh");
+    setIsLoggedIn(false);
+    toast.success("logged out successfully!");
+  };
+
+  const userDetails = {
+    name: "John Doe",
+    email: "johndoe@example.com",
+    phone: "+123456789",
+    location: "New York, USA",
+  };
+
+  const toggleProfile = () => {
+    setShowProfile((prev) => !prev);
+  };
+
+  const handleCloseModal = () => {
+    setShowProfile(false);
+  };
+
   return (
     <div className="bg-[#eaf4fc] h-screen flex flex-col gap-3">
-      <header className="p-4  flex-shrink-0 ">
+      <ToastContainer
+        toastClassName="transition-all duration-300 ease-in-out"
+        bodyClassName="m-0 rounded-3xl bg-white"
+        toastStyle={{
+          backgroundColor: "transparent",
+          padding: "0px",
+          boxShadow: "none",
+          transition: "all 0.3s ease-in-out",
+          display: "flex",
+          flexDirection: "row",
+        }}
+        position="top-center"
+        autoClose={7000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        closeButton={false}
+        transition={Slide}
+      />
+      <header className="p-4  flex-shrink-0 z-50">
         <nav className="container mx-auto flex items-center justify-between ">
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-2 cursor-pointer">
@@ -235,18 +309,68 @@ export default function Home() {
               <Image src={logo} alt="logo" width={150} height={40} />
             </Link>
           </div>
-          <div className="flex items-center gap-2">
-            <Link href="/signin" className="text-emerald-500 text-sm md:text-lg font-semibold px-4 md:px-6 py-2 rounded-md">
-              Login
-            </Link>
-            <Link href="/signup" className="bg-emerald-500 text-white text-sm md:text-lg px-4 md:px-6 py-2 font-semibold rounded-md">
-              Sign Up
-            </Link>
+          <div className="relative flex items-center gap-2">
+            {isLoggedIn ? (
+              <div className="relative flex items-center gap-2">
+                 <h1 className="text-xl font-semibold text-gray-800">{userDetails.name}</h1>
+
+                <Image
+                  src={user}
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="cursor-pointer"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                />
+              
+                {showDropdown && (
+                  <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg z-50 px-6">
+                    <div className="flex justify-between items-center gap-1">
+                      <button
+                        onClick={toggleProfile}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left font-semibold"
+                      >
+                        Profile
+                      </button>
+                      <CiUser className="text-2xl text-gray-700 hover:text-emerald-500 transition-colors duration-200" />
+                    </div>
+                    <div className="flex justify-between items-center gap-1">
+                      <button
+                        onClick={handleLogout}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left font-semibold"
+                      >
+                        Logout
+                      </button>
+                      <IoLogOutOutline className="text-2xl text-gray-700 hover:text-emerald-500 transition-colors duration-200" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/signin"
+                  className="text-emerald-500 text-sm md:text-lg font-semibold px-4 md:px-6 py-2 rounded-md"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-emerald-500 text-white text-sm md:text-lg px-4 md:px-6 py-2 font-semibold rounded-md"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         </nav>
       </header>
 
-      <main className="h-4/5 w-full relative mb-40">
+      {showProfile && (
+        <UserProfile user={userDetails} onClose={handleCloseModal} />
+      )}
+
+      <main className="h-4/5 w-full relative mb-40 z-0">
         <div className="container mx-auto max-w-7xl p-4 bg-gradient-to-br from-slate-50 via-slate-50 to-emerald-400">
           <section className="max-h-full grid grid-cols-1 md:grid-cols-2 container items-start mx-auto max-w-7xl p-4">
             <div className="col-span-1 py-4">

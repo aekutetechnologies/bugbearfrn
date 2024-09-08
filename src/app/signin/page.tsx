@@ -6,14 +6,17 @@ import Image from "next/image";
 import shield from "../../../public/assets/sheld_image.png";
 import whiteLogo from "../../../public/assets/white_bugbear.png";
 import Link from "next/link";
-import Loader from "@/src/components/Loader"; // Adjust the path to where your Loader component is located
+import Loader from "@/src/components/Loader";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  // Handle form submission
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent page reload
     console.log(email, password);
@@ -34,7 +37,15 @@ const LoginPage = () => {
           },
         }
       );
-      console.log("Login successful:", response.data);
+      const msg = response.data;
+      const { access, refresh } = response.data.token;
+      localStorage.setItem("Access", access);
+      localStorage.setItem("Refresh", refresh);
+      localStorage.setItem("showToast", "Login successful!");
+
+      console.log(access, refresh);
+      console.log("Login successful:", msg);
+      router.push("/");
     } catch (error: unknown) {
       setLoading(false);
       if (axios.isAxiosError(error) && error.response) {
@@ -61,6 +72,17 @@ const LoginPage = () => {
 
   return (
     <div className="h-screen bg-[#def0ff] flex flex-col">
+      <ToastContainer 
+        position="top-center" 
+        autoClose={5000} 
+        hideProgressBar={false} 
+        newestOnTop={false} 
+        closeOnClick 
+        rtl={false} 
+        pauseOnFocusLoss 
+        draggable 
+        pauseOnHover 
+      />
       <header className="p-4 flex-shrink-0">
         <nav className="container mx-auto flex items-center justify-between">
           <div className="flex items-center">
@@ -73,7 +95,6 @@ const LoginPage = () => {
               />
             </Link>
           </div>
-         
         </nav>
       </header>
 
@@ -107,7 +128,11 @@ const LoginPage = () => {
                     </p>
                   </div>
                   <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                    <label htmlFor="email" className="sr-only">
+                      Email
+                    </label>
                     <input
+                      id="email"
                       type="email"
                       placeholder="Email"
                       className="p-3 rounded-md border-black/50 border outline-none text-xs placeholder:text-black placeholder:text-xs"
@@ -115,7 +140,12 @@ const LoginPage = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
+
+                    <label htmlFor="password" className="sr-only">
+                      Password
+                    </label>
                     <input
+                      id="password"
                       type="password"
                       placeholder="Password"
                       className="p-3 rounded-md border-black/50 border outline-none text-xs placeholder:text-black placeholder:text-xs"
@@ -123,6 +153,7 @@ const LoginPage = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
+
                     {errorMessage && (
                       <p className="text-red-500 text-xs">{errorMessage}</p>
                     )}
