@@ -6,9 +6,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation"; // Next.js 13+ router
 import axios from "axios";
 
+import logo from "../../../public/assets/logo.png";
+import user from "../../../public/assets/user_png.png";
 import github from "@/public/assets/github.png";
 import instagram from "@/public/assets/instagram.webp";
-import { getJobs, fetchJobDetails } from '../../api/jobApi';
+import { CiUser } from "react-icons/ci";
+import { IoLogOutOutline } from "react-icons/io5";
+import { IoIosNotifications } from "react-icons/io";
+import { toast } from "react-toastify";
+// import { getJobs, fetchJobDetails } from '../../api/jobApi';
+import { BsSearch } from "react-icons/bs";
 
 import {
   SlCalender,
@@ -18,6 +25,7 @@ import {
   SlBriefcase,
   SlTag,
 } from "react-icons/sl"; // Importing icons
+import Navbar from "@/src/components/Navbar";
 
 interface Job {
   id: string;
@@ -37,13 +45,22 @@ interface Job {
   org_name: string;
 }
 
-const JobsPage = () => {
+interface NavbarProps {
+  search: boolean;
+  button: boolean;
+}
+
+const JobsPage = ({ search, button }: NavbarProps) => {
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [jobDetails, setJobDetails] = useState<any>(null);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -52,18 +69,19 @@ const JobsPage = () => {
       setSearchQuery(search);
     }
   }, []);
-
   const getJobs = async () => {
+    console.log("job page");
     setLoading(true);
     try {
       const res = await axios.post(
-        "https://bugbearback.onrender.com/api/jobs/search/",
+        "http://127.0.0.1:8000/api/jobs/search/",
         {
           title: searchQuery,
         }
       );
       console.log(res.data.results);
       setJobs(res.data.results);
+      
     } catch (err) {
       console.error("Error during API request:", err);
     } finally {
@@ -71,23 +89,18 @@ const JobsPage = () => {
     }
   };
 
+
   useEffect(() => {
     if (searchQuery) {
       getJobs();
     }
   }, [searchQuery]);
 
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (searchQuery) {
-      getJobs();
-    }
-  };
 
   const fetchJobDetails = async (id: string) => {
     try {
       const res = await axios.get(
-        `https://bugbearback.onrender.com/api/jobs/${id}/`
+        `http://127.0.0.1:8000/api/jobs/${id}/`
       );
       console.log(res.data);
       setJobDetails(res.data);
@@ -97,45 +110,22 @@ const JobsPage = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("Access");
+    localStorage.removeItem("Refresh");
+    setIsLoggedIn(false);
+    toast.success("logged out successfully!");
+  };
+
+
+  const toggleProfile = () => {
+    setShowProfile((prev) => !prev);
+  };
+
   return (
     <div className="bg-[#eaf4fc] min-h-screen flex flex-col">
-      <header className="p-4 flex-shrink-0">
-        <nav className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2 cursor-pointer">
-              <Image
-                src="/assets/logo.png"
-                alt="logo"
-                width={150}
-                height={40}
-              />
-            </Link>
-          </div>
-          <div className="flex items-center gap-2">
-            <form onSubmit={handleSearch} className="flex items-center">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search jobs..."
-                className="border rounded-md p-2 px-4"
-              />
-              <button
-                type="submit"
-                className="ml-2 bg-emerald-500 text-white px-4 py-2 rounded-md"
-              >
-                Search
-              </button>
-            </form>
-            <Link href="/signin" className="text-emerald-500 text-sm md:text-lg font-semibold px-4 md:px-6 py-2 rounded-md">
-              Login
-            </Link>
-            <Link href="/signup" className="bg-emerald-500 text-white text-sm md:text-lg px-4 md:px-6 py-2 font-semibold rounded-md">
-              Sign Up
-            </Link>
-          </div>
-        </nav>
-      </header>
+ 
+      <Navbar search={true} button={true}/>
 
       <main className="flex-1 p-4 flex flex-col overflow-hidden">
         <div className="container mx-auto mb-4">
